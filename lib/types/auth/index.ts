@@ -12,11 +12,27 @@ export interface LoginData {
 }
 
 export interface AuthResponse {
-  email: string;
   token: string;
   refreshToken: string;
   id: number;
   ok: boolean;
 }
+
+export interface SessionCookie {
+  token: string;
+  refreshToken: string;
+}
+
+export interface Session {
+  jwt?: string;
+  rt?: string;
+}
+
+export interface GetLoginProps {
+  url: string;
+  state: string;
+}
+
+export type AuthProvider = "google" | "github";
 
 type Subscription = "FREE" | "PRO" | "GOLD";

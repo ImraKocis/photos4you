@@ -23,60 +23,28 @@ import {
 } from "@/components/ui/select";
 import { signup } from "@/app/actions/auth/actions";
 import { Loader2 } from "lucide-react";
-
-const SubscriptionRoles = ["FREE", "PRO", "GOLD"] as const;
-
-const formSchema = z
-  .object({
-    firstName: z
-      .string()
-      .regex(
-        new RegExp("^[a-zA-Z0-9]+$"),
-        "Please use only letters and numbers",
-      )
-      .min(2)
-      .max(50),
-    lastName: z
-      .string()
-      .regex(
-        new RegExp("^[a-zA-Z0-9]+$"),
-        "Please use only letters and numbers",
-      )
-      .min(2)
-      .max(50),
-    email: z.string().email("Please input valid email address"),
-    password: z
-      .string()
-      .min(8, "Password must be at least 8 characters")
-      .max(24, "Password can be 24 characters long")
-      .regex(
-        new RegExp(`^(?=.*[A-Za-z])(?=.*\\d).*$`),
-        "Please use at least one number and one letter",
-      ),
-    confirmPassword: z
-      .string()
-      .min(8, "Password must be at least 8 characters")
-      .max(24, "Password can be 24 characters long")
-      .regex(
-        new RegExp(`^(?=.*[A-Za-z])(?=.*\\d).*$`),
-        "Please use at least one number letter",
-      ),
-    subscription: z.enum(SubscriptionRoles),
-  })
-  .refine(
-    (values) => {
-      return values.password === values.confirmPassword;
-    },
-    {
-      message: "Password must match",
-      path: ["confirmPassword"],
-    },
-  );
+import { FaGithub, FaGoogle } from "react-icons/fa";
+import {
+  ProviderLogo,
+  ProviderLogoContainer,
+} from "@/app/ui/auth/provider-logo";
+import {
+  githubAuthWindow,
+  googleAuthWindow,
+} from "@/app/ui/auth/auth-container";
+import { registerFormSchema } from "@/app/lib/auth/definitions";
+import { useDispatch, useStore } from "react-redux";
+import { set as setAuth } from "@/lib/redux/features/authSlice";
+import { set as setUser } from "@/lib/redux/features/userSlice";
+import { RootState } from "@/lib/redux/store";
+import { getUser } from "@/app/actions/user/actions";
 
 export function SignupForm() {
   const { toast } = useToast();
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const store = useStore<RootState>();
+  const dispatch = useDispatch();
+  const form = useForm<z.infer<typeof registerFormSchema>>({
+    resolver: zodResolver(registerFormSchema),
     defaultValues: {
       firstName: "",
       lastName: "",
@@ -87,29 +55,39 @@ export function SignupForm() {
     },
   });
 
-  async function onSubmit(data: z.infer<typeof formSchema>) {
+  async function onSubmit(data: z.infer<typeof registerFormSchema>) {
     const response = await signup(data);
-    // TODO: if response ok redirect to page, save token to cookies else show error message
-    response?.ok
-      ? console.log("redirect")
-      : toast({
-          variant: "destructive",
-          title: "Registration has failed!",
-          description: "Something went wrong, please try again later",
-        });
+
+    if (!response)
+      toast({
+        variant: "destructive",
+        title: "Registration has failed!",
+        description: "Something went wrong, please try again later",
+      });
+    else if (!response.ok) {
+      toast({
+        variant: "destructive",
+        title: "Registration has failed!",
+        description: "User with this email already exists",
+      });
+    } else {
+      dispatch(setAuth(response));
+      const user = await getUser();
+      dispatch(setUser(user));
+    }
   }
 
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-4 w-full min-w-[370px] h-full justify-center items-center bg-white p-5"
+        className="space-y-3 w-full min-w-[370px] h-full flex flex-col justify-center items-center bg-white p-5"
       >
         <FormField
           control={form.control}
           name="firstName"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="w-full">
               <FormLabel>Firstname</FormLabel>
               <FormControl>
                 <Input type="text" placeholder="John" {...field} />
@@ -122,7 +100,7 @@ export function SignupForm() {
           control={form.control}
           name="lastName"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="w-full">
               <FormLabel>Lastname</FormLabel>
               <FormControl>
                 <Input type="text" placeholder="Doe" {...field} />
@@ -135,7 +113,7 @@ export function SignupForm() {
           control={form.control}
           name="email"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="w-full">
               <FormLabel>Email</FormLabel>
               <FormControl>
                 <Input
@@ -152,7 +130,7 @@ export function SignupForm() {
           control={form.control}
           name="password"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="w-full">
               <FormLabel>Password</FormLabel>
               <FormControl>
                 <Input type="password" {...field} />
@@ -165,7 +143,7 @@ export function SignupForm() {
           control={form.control}
           name="confirmPassword"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="w-full">
               <FormLabel>Confirm Password</FormLabel>
               <FormControl>
                 <Input type="password" {...field} />
@@ -178,9 +156,9 @@ export function SignupForm() {
           control={form.control}
           name="subscription"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="w-full">
               <FormLabel>Subscription</FormLabel>
-              <Select onValueChange={field.onChange}>
+              <Select onValueChange={field.onChange} defaultValue="FREE">
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select a subscripton" />
@@ -196,12 +174,36 @@ export function SignupForm() {
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={form.formState.isSubmitting}>
+        <Button
+          className="w-full flex"
+          type="submit"
+          disabled={form.formState.isSubmitting}
+        >
           {form.formState.isSubmitting ? (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
           ) : null}
           {form.formState.isSubmitting ? "Please wait" : "Submit"}
         </Button>
+        <ProviderLogoContainer>
+          <ProviderLogo>
+            <FaGoogle
+              className="w-12 text-black"
+              onClick={async (event) => {
+                event.preventDefault();
+                await googleAuthWindow(store);
+              }}
+            />
+          </ProviderLogo>
+          <ProviderLogo>
+            <FaGithub
+              className="w-12 text-black"
+              onClick={async (event) => {
+                event.preventDefault();
+                await githubAuthWindow(store);
+              }}
+            />
+          </ProviderLogo>
+        </ProviderLogoContainer>
       </form>
     </Form>
   );

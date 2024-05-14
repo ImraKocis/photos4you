@@ -3,6 +3,9 @@ import { Hanken_Grotesk as Grotesk } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/toaster";
+import { Providers } from "@/utils/providers/Providers";
+import { getUser } from "@/app/actions/user/actions";
+import { SideNavigation } from "@/app/ui/navigation/side-navigation";
 
 const grotesk = Grotesk({
   subsets: ["latin"],
@@ -15,21 +18,27 @@ export const metadata: Metadata = {
   description: "Created by Imra Kocis",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const user = await getUser();
   return (
     <html lang="en" suppressHydrationWarning>
       <body
         className={cn(
-          "min-h-screen bg-background font-grotesk antialiased",
+          "min-h-screen bg-background font-grotesk antialiased flex",
           grotesk.variable,
         )}
       >
-        {children}
-        <Toaster />
+        <Providers user={user}>
+          <div className="flex h-full w-full">
+            <SideNavigation />
+            {children}
+            <Toaster />
+          </div>
+        </Providers>
       </body>
     </html>
   );

@@ -16,32 +16,50 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { login } from "@/app/actions/auth/actions";
 import { Loader2 } from "lucide-react";
-
-const formSchema = z.object({
-  email: z.string().email("Please input valid email address"),
-  password: z.string(),
-});
+import {
+  ProviderLogo,
+  ProviderLogoContainer,
+} from "@/app/ui/auth/provider-logo";
+import { FaGithub, FaGoogle } from "react-icons/fa";
+import {
+  githubAuthWindow,
+  googleAuthWindow,
+} from "@/app/ui/auth/auth-container";
+import { loginFormSchema } from "@/app/lib/auth/definitions";
+import { useDispatch, useStore } from "react-redux";
+import { RootState } from "@/lib/redux/store";
+import { set as setAuth } from "@/lib/redux/features/authSlice";
+import { set as setUser } from "@/lib/redux/features/userSlice";
+import { getUser } from "@/app/actions/user/actions";
 
 export function LoginForm() {
   const { toast } = useToast();
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const store = useStore<RootState>();
+  const dispatch = useDispatch();
+  const form = useForm<z.infer<typeof loginFormSchema>>({
+    resolver: zodResolver(loginFormSchema),
     defaultValues: {
       email: "",
       password: "",
     },
   });
 
-  async function onSubmit(data: z.infer<typeof formSchema>) {
+  async function onSubmit(data: z.infer<typeof loginFormSchema>) {
     const response = await login(data);
-    // TODO: if response ok redirect to page, save token to cookies else show error message
-    response && response.ok
-      ? console.log("redirect")
-      : toast({
-          variant: "destructive",
-          title: "Authorization failed!",
-          description: "Email or password are wrong",
-        });
+    dispatch(setAuth(response));
+    const user = await getUser();
+    dispatch(setUser(user));
+    if (response && response.ok) {
+      dispatch(setAuth(response));
+      const user = await getUser();
+      dispatch(setUser(user));
+    } else {
+      toast({
+        variant: "destructive",
+        title: "Authorization failed!",
+        description: "Email or password are wrong",
+      });
+    }
   }
 
   return (
@@ -80,14 +98,36 @@ export function LoginForm() {
             </FormItem>
           )}
         />
-        <div className="w-full flex">
-          <Button type="submit" disabled={form.formState.isSubmitting}>
-            {form.formState.isSubmitting ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            ) : null}
-            {form.formState.isSubmitting ? "Please wait" : "Submit"}
-          </Button>
-        </div>
+        <Button
+          className="w-full flex"
+          type="submit"
+          disabled={form.formState.isSubmitting}
+        >
+          {form.formState.isSubmitting ? (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          ) : null}
+          {form.formState.isSubmitting ? "Please wait" : "Submit"}
+        </Button>
+        <ProviderLogoContainer>
+          <ProviderLogo>
+            <FaGoogle
+              className="w-12 text-black"
+              onClick={async (event) => {
+                event.preventDefault();
+                await googleAuthWindow(store);
+              }}
+            />
+          </ProviderLogo>
+          <ProviderLogo>
+            <FaGithub
+              className="w-12 text-black"
+              onClick={async (event) => {
+                event.preventDefault();
+                await githubAuthWindow(store);
+              }}
+            />
+          </ProviderLogo>
+        </ProviderLogoContainer>
       </form>
     </Form>
   );

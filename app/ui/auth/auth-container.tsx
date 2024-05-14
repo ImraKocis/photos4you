@@ -7,9 +7,78 @@ import { Button } from "@/components/ui/button";
 import "./auth-container.css";
 import { X } from "lucide-react";
 import { AlertDialogCancel } from "@/components/ui/alert-dialog";
+import {
+  getGithubLoginProps,
+  getGoogleLoginProps,
+  loginWithProvider,
+} from "@/app/actions/auth/actions";
+import { validate } from "uuid";
+import { AuthProvider, AuthResponse } from "@/lib/types/auth";
+import { toast } from "@/components/ui/use-toast";
+import { AppStore } from "@/lib/redux/store";
+import { set as setAuth } from "@/lib/redux/features/authSlice";
+import { set as setUser } from "@/lib/redux/features/userSlice";
+import { getUser } from "@/app/actions/user/actions";
+
+export const googleAuthWindow = async (
+  store: AppStore,
+): Promise<AuthResponse | null> => {
+  const { url, state } = await getGoogleLoginProps();
+  const authWindow = window.open(url, "", "popup=true");
+  if (authWindow) {
+    const checkWindow = setInterval(async () => {
+      if (authWindow.closed) {
+        clearInterval(checkWindow);
+        if (state && validate(state))
+          return await loginProvider(state, "google", store);
+      }
+    }, 100);
+  }
+  return null;
+};
+
+export const githubAuthWindow = async (
+  store: AppStore,
+): Promise<AuthResponse | null> => {
+  const { url, state } = await getGithubLoginProps();
+  const authWindow = window.open(url, "", "popup=true");
+  if (authWindow) {
+    const checkWindow = setInterval(async () => {
+      if (authWindow.closed) {
+        clearInterval(checkWindow);
+        if (state && validate(state)) {
+          return await loginProvider(state, "github", store);
+        }
+      }
+    }, 100);
+  }
+  return null;
+};
+
+const loginProvider = async (
+  id: string,
+  provider: AuthProvider,
+  store?: AppStore,
+) => {
+  const response = await loginWithProvider(id, provider);
+  store?.dispatch(setAuth(response));
+  const user = await getUser();
+  store?.dispatch(setUser(user));
+  toast({
+    variant: "default",
+    title: "Provider login",
+    description: (
+      <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+        <code className="text-white">{JSON.stringify(response, null, 2)}</code>
+      </pre>
+    ),
+  });
+  return response;
+};
 
 export function AuthContainer(): ReactElement {
   const [isActive, setIsActive] = useState(false);
+
   return (
     <div
       className={twMerge(
