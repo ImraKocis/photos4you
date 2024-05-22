@@ -21,6 +21,14 @@ export async function createSession(payload: SessionCookie) {
     sameSite: "lax",
     path: "/",
   });
+
+  cookies().set("user-id", payload.id.toString(), {
+    httpOnly: true,
+    secure: true,
+    expires: rtExpireAt,
+    sameSite: "lax",
+    path: "/",
+  });
 }
 
 export async function updateSession() {
@@ -48,6 +56,7 @@ export async function updateSession() {
 export async function deleteSession() {
   cookies().delete("jwt-token");
   cookies().delete("rt-token");
+  cookies().delete("user-id");
 }
 
 export async function getSession(): Promise<Session> {

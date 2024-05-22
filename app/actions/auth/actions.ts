@@ -42,6 +42,7 @@ export async function signup(data: SignupData): Promise<AuthResponse | null> {
       await createSession({
         token: data.token,
         refreshToken: data.refreshToken,
+        id: data.id,
       });
     return data;
   }
@@ -65,6 +66,7 @@ export async function login(data: LoginData): Promise<AuthResponse | null> {
       await createSession({
         token: data.token,
         refreshToken: data.refreshToken,
+        id: data.id,
       });
     return data;
   }
@@ -91,6 +93,7 @@ export async function loginWithProvider(
       await createSession({
         token: data.token,
         refreshToken: data.refreshToken,
+        id: data.id,
       });
     return data;
   }

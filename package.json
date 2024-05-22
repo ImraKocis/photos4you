@@ -9,6 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.577.0",
+    "@aws-sdk/s3-presigned-post": "^3.577.0",
+    "@aws-sdk/signature-v4-crt": "^3.577.0",
     "@hookform/resolvers": "^3.3.4",
     "@radix-ui/react-alert-dialog": "^1.0.5",
     "@radix-ui/react-avatar": "^1.0.4",
@@ -21,6 +24,8 @@
     "@react-oauth/google": "^0.12.1",
     "@reduxjs/toolkit": "^2.2.4",
     "@types/uuid": "^9.0.8",
+    "aws-crt": "^1.21.2",
+    "aws-sdk": "^2.1621.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "lucide-react": "^0.376.0",

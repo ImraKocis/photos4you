@@ -1,12 +1,14 @@
 import { Action, configureStore, ThunkAction } from "@reduxjs/toolkit";
 import userReducer from "./features/userSlice";
 import authReducer from "./features/authSlice";
+import navigationBarReducer from "./features/navigationBarSlice";
 
 export const makeStore = () => {
   return configureStore({
     reducer: {
       user: userReducer,
       auth: authReducer,
+      navigationBar: navigationBarReducer,
     },
   });
 };
