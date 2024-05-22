@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Providers } from "@/utils/providers/Providers";
 import { getUser } from "@/app/actions/user/actions";
 import { SideNavigation } from "@/app/ui/navigation/side-navigation";
+import { LayoutWrapper } from "@/app/ui/main/layout-wrapper";
 
 const grotesk = Grotesk({
   subsets: ["latin"],
@@ -33,9 +34,9 @@ export default async function RootLayout({
         )}
       >
         <Providers user={user}>
-          <div className="flex h-full w-full">
+          <div className="flex relative h-full w-full">
             <SideNavigation />
-            {children}
+            <LayoutWrapper>{children}</LayoutWrapper>
             <Toaster />
           </div>
         </Providers>

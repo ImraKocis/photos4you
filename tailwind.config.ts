@@ -21,6 +21,14 @@ const config = {
       fontFamily: {
         grotesk: ["var(--font-grotesk)"],
       },
+      width: {
+        "navigation-open": "300px",
+        "navigation-closed": "70px",
+      },
+      margin: {
+        "navigation-open": "300px",
+        "navigation-closed": "70px",
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
