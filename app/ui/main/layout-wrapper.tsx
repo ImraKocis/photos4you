@@ -12,7 +12,7 @@ export function LayoutWrapper({ children }: LayoutProviderProps): ReactElement {
   return (
     <div
       className={twMerge(
-        "relative w-full px-6 transform duration-500",
+        "relative w-full py-20 px-6 transform duration-500",
         isOpen ? "ml-navigation-open" : "ml-navigation-closed",
       )}
     >

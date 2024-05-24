@@ -18,8 +18,11 @@ export async function CustomImage({
     .setRegion(imageData.region)
     .build();
   return (
-    <div className="flex items-center justify-center max-w-[470px] h-[580px] bg-gray-200 rounded-lg shadow-md">
+    <div className="flex relative items-center justify-center max-w-[470px] h-[580px] bg-gray-200 rounded-lg shadow-md">
       <Image src={src} alt="image" width={470} height={580} />
+      <div className="absolute top-5 right-5 bg-red-200 h-10 w-10 flex">
+        test
+      </div>
     </div>
   );
 }

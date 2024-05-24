@@ -64,15 +64,6 @@ const loginProvider = async (
   store?.dispatch(setAuth(response));
   const user = await getUser();
   store?.dispatch(setUser(user));
-  toast({
-    variant: "default",
-    title: "Provider login",
-    description: (
-      <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-        <code className="text-white">{JSON.stringify(response, null, 2)}</code>
-      </pre>
-    ),
-  });
   return response;
 };
 

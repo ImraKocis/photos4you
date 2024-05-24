@@ -64,3 +64,8 @@ export async function getSession(): Promise<Session> {
   const rt = cookies().get("rt-token")?.value;
   return { jwt, rt };
 }
+
+export async function getSessionUserId(): Promise<{ id?: string }> {
+  const id = cookies().get("user-id")?.value;
+  return { id };
+}
