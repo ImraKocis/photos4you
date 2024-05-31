@@ -2,9 +2,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { handleUserProfileName } from "@/lib/utils";
 
 interface ProfileAvatarProps {
-  fullName?: string;
-  firstName?: string;
-  lastName?: string;
+  fullName?: string | null;
+  firstName?: string | null;
+  lastName?: string | null;
   image?: string;
 }
 

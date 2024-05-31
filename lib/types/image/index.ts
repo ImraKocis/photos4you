@@ -2,6 +2,7 @@ export interface S3Image {
   Key: string;
   LastModified: string;
   ETag: string;
+  // Size in Bytes
   Size: number;
   StorageClass: StorageClasses;
 }
@@ -9,6 +10,15 @@ export interface S3Image {
 export interface AWSUrlProps {
   bucket: string;
   region: string;
+}
+
+export interface ImageDB {
+  id: number;
+  url: string;
+  size: number;
+  postId: number;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 type StorageClasses =

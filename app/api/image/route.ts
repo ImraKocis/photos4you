@@ -5,7 +5,7 @@ import { ListObjectsV2Command } from "@aws-sdk/client-s3";
 import { NextRequest } from "next/server";
 
 export async function POST(request: Request) {
-  const { filename, contentType, userId } = await request.json();
+  const { contentType, userId } = await request.json();
 
   try {
     const client = await getS3Client();
@@ -32,13 +32,13 @@ export async function POST(request: Request) {
 }
 
 export async function GET(request: NextRequest) {
-  // const userId = request.nextUrl.searchParams.get("userId");
+  const userId = request.nextUrl.searchParams.get("id");
   const s3 = await getS3Client();
 
   try {
     const input = {
       Bucket: process.env.AWS_BUCKET_NAME,
-      // Prefix: userId ? userId : undefined,
+      Prefix: userId ? `${userId}/` : undefined,
     };
 
     const command = new ListObjectsV2Command(input);

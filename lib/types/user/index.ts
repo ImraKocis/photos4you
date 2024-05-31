@@ -8,18 +8,17 @@ export interface User {
   role: Role;
   subscription: Subscription;
   posts: Post[];
-  avatar: string | null;
   firstName: string | null;
   lastName: string | null;
   lastSubscriptionChange: Date | null;
+  avatar?: string;
 }
 
 export interface Subscription {
   id: number;
   createdAt: Date;
   dailyLimitId: number;
-  isExpired: boolean;
-  expired: Date | null;
+  odlSubscription: SubscriptionName | null;
   name: SubscriptionName;
   updatedAt: Date;
   uploadSizeId: number;

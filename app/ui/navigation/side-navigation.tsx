@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactElement, useState } from "react";
+import { ReactElement } from "react";
 import { twMerge } from "tailwind-merge";
 import { CiMenuFries } from "react-icons/ci";
 import {
@@ -23,12 +23,12 @@ import { useDispatch } from "react-redux";
 import { deleteUser } from "@/lib/redux/features/userSlice";
 import { Dispatch } from "redux";
 import { set } from "@/lib/redux/features/navigationBarSlice";
-import { MdOutlineAddAPhoto } from "react-icons/md";
-import { UploadPhoto } from "@/app/ui/image/upload";
+import { CreatePostDialog } from "@/app/ui/navigation/create-post-dialog";
+import { AlertDialogProvider } from "@/app/ui/navigation/alert-dialog-context";
 
 const content: LinkContent[] = [
   { title: "Home", href: "/", icon: <IoHome className="w-6 h-6" /> },
-  { title: "Search", href: "/", icon: <IoSearch className="w-6 h-6" /> },
+  { title: "Search", href: "/search", icon: <IoSearch className="w-6 h-6" /> },
 ];
 
 interface LinkContent {
@@ -92,30 +92,9 @@ export function SideNavigation() {
             {user ? (
               <>
                 <li>
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <div className="flex justify-center items-center gap-2">
-                        <button className="flex w-full items-center relative">
-                          <div className="flex justify-center items-center p-2">
-                            <MdOutlineAddAPhoto className="w-6 h-6 " />
-                          </div>
-                          <span
-                            className={twMerge(
-                              "transition ml-2 duration-300 ease-in-out absolute left-10 flex items-center h-full top-0",
-                              isOpen
-                                ? "opacity-100"
-                                : "opacity-0 pointer-events-none -z-50",
-                            )}
-                          >
-                            Creat Post
-                          </span>
-                        </button>
-                      </div>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <UploadPhoto />
-                    </AlertDialogContent>
-                  </AlertDialog>
+                  <AlertDialogProvider>
+                    <CreatePostDialog />
+                  </AlertDialogProvider>
                 </li>
                 <li>
                   <Link className="flex items-center" href="/profile">

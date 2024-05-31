@@ -38,6 +38,15 @@ const handleIsCardDisabledByDate = (user: User | null): boolean => {
   return true;
 };
 
+const handleOldSubscription = (user: User | null): boolean => {
+  const oneDay = 1000 * 3600 * 24;
+  if (!user?.subscription.odlSubscription) return false;
+  return (
+    new Date().getTime() - new Date(user.subscription.updatedAt).getTime() <=
+    oneDay
+  );
+};
+
 export function SubscriptionCard({
   title,
   price,
@@ -52,12 +61,17 @@ export function SubscriptionCard({
     <Card
       className={twMerge(
         "flex flex-col border-2",
-        user?.subscription.name == title ? "border-primary" : "border-gray-200",
+        user?.subscription.name == title
+          ? "border-amber-500"
+          : "border-gray-200",
+        handleOldSubscription(user) &&
+          user?.subscription.odlSubscription == title
+          ? "border-primary"
+          : "",
       )}
     >
       <CardHeader className="flex h-full items-start">
         <CardTitle>{title}</CardTitle>
-
         <CardDescription>
           {title == "FREE" ? "free" : `${price}€/month`}
         </CardDescription>
@@ -89,7 +103,7 @@ export function SubscriptionCard({
               newSubscriptionName: title,
               oldSubscriptionName: user?.subscription.name,
             });
-            console.log(newUserData);
+
             if (newUserData) {
               dispatch(set(newUserData));
               toast({
