@@ -1,26 +1,12 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { handleUserProfileName } from "@/lib/utils";
 
 interface ProfileAvatarProps {
-  fullName?: string;
-  firstName?: string;
-  lastName?: string;
+  fullName?: string | null;
+  firstName?: string | null;
+  lastName?: string | null;
   image?: string;
 }
-
-const handleName = (
-  fullName?: string,
-  firstName?: string,
-  lastName?: string,
-): string => {
-  if (fullName) {
-    const names = fullName.split(" ");
-    return `${names[0][0]}${names[1][0]}`;
-  }
-  if (firstName && lastName) return `${firstName[0]}${lastName[0]}`;
-  else if (firstName) return `${firstName[0]}`;
-  else if (lastName) `${lastName[0]}`;
-  return "";
-};
 
 export function ProfileAvatar({
   fullName,
@@ -28,12 +14,16 @@ export function ProfileAvatar({
   firstName,
   image,
 }: ProfileAvatarProps) {
-  console.log("image?test", image);
   return (
     <Avatar>
-      <AvatarImage src={image} width={24} height={24} alt="profile image" />
+      <AvatarImage
+        src={image}
+        width={24}
+        height={24}
+        alt="user profile avatar"
+      />
       <AvatarFallback>
-        {handleName(fullName, firstName, lastName)}
+        {handleUserProfileName(fullName, firstName, lastName)}
       </AvatarFallback>
     </Avatar>
   );

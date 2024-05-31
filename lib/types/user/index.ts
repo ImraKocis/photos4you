@@ -6,14 +6,26 @@ export interface User {
   updatedAt: Date;
   email: string;
   role: Role;
+  subscription: Subscription;
+  posts: Post[];
+  firstName: string | null;
+  lastName: string | null;
+  lastSubscriptionChange: Date | null;
   avatar?: string;
-  firstName?: string;
-  lastName?: string;
-  posts?: Post[];
-  subscription?: Subscription;
-  lastSubscriptionChange?: Date;
+}
+
+export interface Subscription {
+  id: number;
+  createdAt: Date;
+  dailyLimitId: number;
+  odlSubscription: SubscriptionName | null;
+  name: SubscriptionName;
+  updatedAt: Date;
+  uploadSizeId: number;
+  userId: number;
+  validFrom: Date;
 }
 
 export type Role = "USER" | "ADMIN";
 
-export type Subscription = "FREE" | "PRO" | "GOLD";
+export type SubscriptionName = "FREE" | "PRO" | "GOLD";

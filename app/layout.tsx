@@ -29,7 +29,7 @@ export default async function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
         className={cn(
-          "min-h-screen bg-background font-grotesk antialiased flex",
+          "min-h-screen w-full bg-background font-grotesk antialiased",
           grotesk.variable,
         )}
       >

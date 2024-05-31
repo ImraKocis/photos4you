@@ -21,7 +21,23 @@ export async function getImageUrlData(): Promise<AWSUrlProps> {
 }
 
 export async function getAllImages(): Promise<S3Image[] | null> {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/image`);
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/image`,
+    { next: { revalidate: 5 } },
+  );
+  if (response.ok) {
+    const data = await response.json();
+    return data.images;
+  }
+  return null;
+}
+
+export async function getImagesWithUserId(
+  id: number,
+): Promise<S3Image[] | null> {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/image?id=${id}`,
+  );
   if (response.ok) {
     const data = await response.json();
     return data.images;
