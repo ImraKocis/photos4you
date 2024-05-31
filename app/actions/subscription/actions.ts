@@ -1,6 +1,6 @@
 "use server";
 
-import { SubscriptionName, User } from "@/lib/types/user";
+import { Subscription, SubscriptionName, User } from "@/lib/types/user";
 import { getSession } from "@/app/lib/auth/session";
 
 interface SubscriptionChangeData {
@@ -38,4 +38,23 @@ export async function changeSubscription(
     console.log(e);
   }
   return null;
+}
+
+export async function getSubscription(
+  id: string,
+): Promise<Subscription | null> {
+  const session = await getSession();
+  const response = await fetch(
+    `${process.env.API_BASE_URL}/subscription/${id}`,
+    {
+      headers: {
+        Authorization: `Bearer ${session.jwt}`,
+      },
+    },
+  );
+  console.log(response);
+  if (!response.ok) {
+    return null;
+  }
+  return await response.json();
 }

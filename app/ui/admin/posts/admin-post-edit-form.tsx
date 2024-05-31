@@ -1,11 +1,11 @@
 "use client";
-
 import { ReactElement, useState } from "react";
+import { User } from "@/lib/types/user";
 import { useToast } from "@/components/ui/use-toast";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { createPostFormSchema } from "@/app/lib/post/definitions";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { userAdminDataUpdateSchema } from "@/app/lib/admin/definitions";
 import {
   Form,
   FormControl,
@@ -15,51 +15,41 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useSmallPostAlertDialogContext } from "@/app/ui/post/small-post-dialog-context";
-import { AlertDialogCancel } from "@/components/ui/alert-dialog";
+import { updateAdminUser } from "@/app/actions/admin/users";
+import { createPostFormSchema } from "@/app/lib/post/definitions";
+import { PostExtended } from "@/lib/types/post";
 import { updatePost } from "@/app/actions/post/actions";
+import { Textarea } from "@/components/ui/textarea";
 
-interface UpdatePostFormCurrentData {
-  postId: number;
-  description?: string;
-  hashtags: string;
-}
-
-export function UpdatePostForm({
-  description,
-  hashtags,
-  postId,
-}: UpdatePostFormCurrentData): ReactElement {
+export function AdminPostEditForm({
+  post,
+}: {
+  post: PostExtended;
+}): ReactElement {
   const { toast } = useToast();
   const [uploading, setUploading] = useState(false);
-  const { setIsSmallPostDialogOpen, isSmallPostDialogOpen } =
-    useSmallPostAlertDialogContext();
   const form = useForm<z.infer<typeof createPostFormSchema>>({
     resolver: zodResolver(createPostFormSchema),
     defaultValues: {
-      description: description,
-      hashtags: hashtags,
+      hashtags: post.hashtags.join(" "),
+      description: post.description,
     },
   });
 
   async function onSubmit(data: z.infer<typeof createPostFormSchema>) {
     setUploading(true);
     const newData = {
-      description:
-        data.description === description ? undefined : data.description,
-      hashtags:
-        data.hashtags === hashtags ? undefined : data.hashtags.split(" "),
+      hashtags: data.hashtags.split(" "),
+      description: data.description,
     };
 
-    const response = await updatePost(postId.toString(), newData);
+    const response = await updatePost(post.id.toString(), newData);
     if (!response) {
       toast({
         variant: "destructive",
-        title: "Post edit failed",
-        description: "Something went wrong, please try again later",
+        title: "Update failed",
       });
       setUploading(false);
       return null;
@@ -67,10 +57,7 @@ export function UpdatePostForm({
     setUploading(false);
     toast({
       title: "Post updated",
-      description:
-        "Your post has been updated successfully, changes will be reflected in the feed shortly",
     });
-    setIsSmallPostDialogOpen(false);
   }
 
   return (
@@ -88,7 +75,7 @@ export function UpdatePostForm({
                 <FormItem className="w-full">
                   <FormLabel>Description</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="What's on your mind?" {...field} />
+                    <Textarea {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -103,14 +90,10 @@ export function UpdatePostForm({
                 <FormItem className="w-full">
                   <FormLabel>Hashtags</FormLabel>
                   <FormControl>
-                    <Input
-                      type="text"
-                      placeholder="#example #hashtag"
-                      {...field}
-                    />
+                    <Input type="text" {...field} />
                   </FormControl>
                   <FormDescription>
-                    Separate hashtags with a space.
+                    Separate hashtags with spaces
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -119,14 +102,8 @@ export function UpdatePostForm({
           </div>
           <div className="flex w-full gap-12">
             <Button className="w-full" type="submit" disabled={uploading}>
-              Publish
+              Update
             </Button>
-            <AlertDialogCancel
-              className="w-full"
-              onClick={() => setIsSmallPostDialogOpen(false)}
-            >
-              Cancel
-            </AlertDialogCancel>
           </div>
         </form>
       </Form>

@@ -27,7 +27,7 @@ interface UpdatePostData {
 
 export async function getAllPosts(): Promise<PostExtended[] | null> {
   const response = await fetch(`${process.env.API_BASE_URL}/post/all`, {
-    next: { revalidate: 10 },
+    next: { revalidate: 10, tags: ["posts"] },
   });
   if (!response.ok) return null;
   return await response.json();

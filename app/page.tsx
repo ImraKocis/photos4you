@@ -1,11 +1,10 @@
-import { PostGrid } from "@/app/ui/post/post-grid";
-import { getLatestPosts } from "@/app/actions/post/actions";
-export default async function Home() {
-  const posts = await getLatestPosts();
-
+import { Suspense } from "react";
+import Loading from "@/app/loading";
+import { HomePageGetter } from "@/app/HomePage";
+export default function Home() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-between w-full">
-      <PostGrid posts={posts} />
-    </div>
+    <Suspense fallback={<Loading />}>
+      <HomePageGetter />
+    </Suspense>
   );
 }

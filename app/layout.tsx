@@ -3,6 +3,7 @@ import { Hanken_Grotesk as Grotesk } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/toaster";
+import { Toaster as SonnerToaster } from "@/components/ui/sonner";
 import { Providers } from "@/utils/providers/Providers";
 import { getUser } from "@/app/actions/user/actions";
 import { SideNavigation } from "@/app/ui/navigation/side-navigation";
@@ -38,6 +39,7 @@ export default async function RootLayout({
             <SideNavigation />
             <LayoutWrapper>{children}</LayoutWrapper>
             <Toaster />
+            <SonnerToaster />
           </div>
         </Providers>
       </body>

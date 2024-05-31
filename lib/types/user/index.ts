@@ -8,8 +8,8 @@ export interface User {
   role: Role;
   subscription: Subscription;
   posts: Post[];
-  firstName: string | null;
-  lastName: string | null;
+  firstName: string;
+  lastName: string;
   lastSubscriptionChange: Date | null;
   avatar?: string;
 }
@@ -25,6 +25,20 @@ export interface Subscription {
   userId: number;
   validFrom: Date;
 }
+
+type UserTable = {
+  id: number;
+  createdAt: Date;
+  updatedAt: Date;
+  email: string;
+  role: Role;
+  subscription: Subscription;
+  posts: Post[];
+  firstName: string | null;
+  lastName: string | null;
+  lastSubscriptionChange: Date | null;
+  avatar?: string;
+};
 
 export type Role = "USER" | "ADMIN";
 
