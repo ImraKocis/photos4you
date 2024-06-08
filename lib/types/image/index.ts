@@ -1,10 +1,14 @@
 export interface S3Image {
   Key: string;
-  LastModified: string;
+  LastModified: Date;
   ETag: string;
   // Size in Bytes
   Size: number;
   StorageClass: StorageClasses;
+}
+
+export interface S3ImageResponse {
+  images: S3Image[];
 }
 
 export interface AWSUrlProps {

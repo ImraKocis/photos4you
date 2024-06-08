@@ -2,7 +2,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { PostExtended } from "@/lib/types/post";
 import Image from "next/image";
-import { AdminUserEditDialog } from "@/app/ui/admin/users/admin-user-edit-dialog";
 import { Edit, Eye, Trash } from "lucide-react";
 import {
   Dialog,
@@ -14,11 +13,10 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { deleteUser } from "@/app/actions/admin/users";
 import { toast } from "sonner";
 import { AdminPostEditDialog } from "@/app/ui/admin/posts/admin-post-edit-dialog";
-import { deletePost } from "@/app/actions/admin/posts";
 import { AdminPostPreviewDialog } from "@/app/ui/admin/posts/admin-post-preview-dialog";
+import { deletePost } from "@/app/actions/post/actions";
 
 export const postColumns: ColumnDef<PostExtended>[] = [
   {

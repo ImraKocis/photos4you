@@ -20,7 +20,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useUser } from "@/lib/redux/hooks";
+import { useSubscription, useUser } from "@/lib/redux/hooks";
 import Image from "next/image";
 import {
   getImagesWithUserId,
@@ -30,10 +30,36 @@ import { ImageUrlBuilder } from "@/utils/builder/images-url-builder";
 import { createPost } from "@/app/actions/post/actions";
 import { AlertDialogCancel } from "@/components/ui/alert-dialog";
 import { useAlertDialogContext } from "@/app/ui/navigation/alert-dialog-context";
+import { Subscription, User } from "@/lib/types/user";
+
+function handlePostCreationAbilityByLimit(
+  user: User | null,
+  subscription: Subscription | null,
+): boolean {
+  if (!user || !subscription) return false;
+  const { DailyLimit } = subscription;
+  const oneDay = 24 * 60 * 60 * 1000;
+  const todayPosts = user.posts.filter(
+    (post) =>
+      new Date().getTime() - new Date(post.createdAt).getTime() <= oneDay,
+  );
+
+  return todayPosts.length < DailyLimit.limit;
+}
+
+function handlePostCreationAbilityBySize(
+  subscription: Subscription | null,
+  imageSize: number,
+): boolean {
+  if (!subscription) return false;
+  const { UploadSize } = subscription;
+  return imageSize <= UploadSize.size * 1024 * 1024;
+}
 
 export function CreatePostForm(): ReactElement {
   const { toast } = useToast();
   const user = useUser();
+  const subscription = useSubscription();
   const { setIsDialogOpen } = useAlertDialogContext();
   const file = useRef<HTMLInputElement | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -64,7 +90,14 @@ export function CreatePostForm(): ReactElement {
       });
       return;
     }
-
+    if (!handlePostCreationAbilityByLimit(user, subscription)) {
+      toast({
+        variant: "destructive",
+        title: "You have reached your daily limit",
+        description: "Please try again tomorrow",
+      });
+      return;
+    }
     if (!arrayOfImages || arrayOfImages.length < 1) {
       toast({
         variant: "destructive",
@@ -73,7 +106,14 @@ export function CreatePostForm(): ReactElement {
       });
       return;
     }
-
+    if (!handlePostCreationAbilityBySize(subscription, arrayOfImages[0].size)) {
+      toast({
+        variant: "destructive",
+        title: "Image size is too big",
+        description: "Please try again with a smaller image",
+      });
+      return;
+    }
     setUploading(true);
     for (let i = 0; i < arrayOfImages.length; i++) {
       const response = await fetch(

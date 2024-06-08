@@ -1,8 +1,7 @@
 import { getLatestPosts } from "@/app/actions/post/actions";
-import { Suspense } from "react";
-import Loading from "@/app/loading";
 import { PostGrid } from "@/app/ui/post/post-grid";
 
+export const dynamic = "force-dynamic";
 export async function HomePageGetter() {
   const posts = await getLatestPosts();
 

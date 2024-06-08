@@ -20,7 +20,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useSmallPostAlertDialogContext } from "@/app/ui/post/small-post-dialog-context";
 import { AlertDialogCancel } from "@/components/ui/alert-dialog";
-import { updatePost } from "@/app/actions/post/actions";
+import { deletePost, updatePost } from "@/app/actions/post/actions";
 
 interface UpdatePostFormCurrentData {
   postId: number;
@@ -35,8 +35,7 @@ export function UpdatePostForm({
 }: UpdatePostFormCurrentData): ReactElement {
   const { toast } = useToast();
   const [uploading, setUploading] = useState(false);
-  const { setIsSmallPostDialogOpen, isSmallPostDialogOpen } =
-    useSmallPostAlertDialogContext();
+  const { setIsSmallPostDialogOpen } = useSmallPostAlertDialogContext();
   const form = useForm<z.infer<typeof createPostFormSchema>>({
     resolver: zodResolver(createPostFormSchema),
     defaultValues: {
@@ -120,6 +119,29 @@ export function UpdatePostForm({
           <div className="flex w-full gap-12">
             <Button className="w-full" type="submit" disabled={uploading}>
               Publish
+            </Button>
+            <Button
+              variant="destructive"
+              type="button"
+              onClick={async () => {
+                const result = await deletePost(postId.toString());
+                if (!result) {
+                  toast({
+                    title: "Failed to delete post",
+                    variant: "destructive",
+                  });
+                  setIsSmallPostDialogOpen(false);
+                  return;
+                }
+                toast({
+                  title: "Post deleted",
+                  description: "Your post has been deleted successfully",
+                });
+                setIsSmallPostDialogOpen(false);
+                return;
+              }}
+            >
+              Delete
             </Button>
             <AlertDialogCancel
               className="w-full"

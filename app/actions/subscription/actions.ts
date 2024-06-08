@@ -1,6 +1,12 @@
 "use server";
 
-import { Subscription, SubscriptionName, User } from "@/lib/types/user";
+import {
+  DailyLimit,
+  Subscription,
+  SubscriptionName,
+  UploadSize,
+  User,
+} from "@/lib/types/user";
 import { getSession } from "@/app/lib/auth/session";
 
 interface SubscriptionChangeData {
@@ -35,14 +41,15 @@ export async function changeSubscription(
 
     if (response.ok) return await response.json();
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
   return null;
 }
 
 export async function getSubscription(
-  id: string,
+  id?: string,
 ): Promise<Subscription | null> {
+  if (!id) return null;
   const session = await getSession();
   const response = await fetch(
     `${process.env.API_BASE_URL}/subscription/${id}`,
@@ -52,9 +59,31 @@ export async function getSubscription(
       },
     },
   );
-  console.log(response);
-  if (!response.ok) {
-    return null;
-  }
+
+  if (!response.ok) return null;
+  return await response.json();
+}
+
+export async function getDailyLimits(): Promise<DailyLimit[] | null> {
+  const session = await getSession();
+  const response = await fetch(`${process.env.API_BASE_URL}/daily-limit`, {
+    headers: {
+      Authorization: `Bearer ${session.jwt}`,
+    },
+  });
+
+  if (!response.ok) return null;
+  return await response.json();
+}
+
+export async function getUploadSizes(): Promise<UploadSize[] | null> {
+  const session = await getSession();
+  const response = await fetch(`${process.env.API_BASE_URL}/upload-size`, {
+    headers: {
+      Authorization: `Bearer ${session.jwt}`,
+    },
+  });
+
+  if (!response.ok) return null;
   return await response.json();
 }

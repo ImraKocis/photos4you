@@ -8,7 +8,8 @@ import { Providers } from "@/utils/providers/Providers";
 import { getUser } from "@/app/actions/user/actions";
 import { SideNavigation } from "@/app/ui/navigation/side-navigation";
 import { LayoutWrapper } from "@/app/ui/main/layout-wrapper";
-
+import { getSubscription } from "@/app/actions/subscription/actions";
+export const dynamic = "force-dynamic";
 const grotesk = Grotesk({
   subsets: ["latin"],
   weight: ["200", "300", "500", "600"],
@@ -26,6 +27,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const user = await getUser();
+  const subscription = await getSubscription(user?.id.toString());
   return (
     <html lang="en" suppressHydrationWarning>
       <body
@@ -34,7 +36,7 @@ export default async function RootLayout({
           grotesk.variable,
         )}
       >
-        <Providers user={user}>
+        <Providers user={user} subscription={subscription}>
           <div className="flex relative h-full w-full">
             <SideNavigation />
             <LayoutWrapper>{children}</LayoutWrapper>

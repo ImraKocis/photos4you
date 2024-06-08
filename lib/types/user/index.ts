@@ -24,21 +24,27 @@ export interface Subscription {
   uploadSizeId: number;
   userId: number;
   validFrom: Date;
+  DailyLimit: DailyLimit;
+  UploadSize: UploadSize;
 }
 
-type UserTable = {
+export interface DailyLimit {
   id: number;
   createdAt: Date;
   updatedAt: Date;
-  email: string;
-  role: Role;
-  subscription: Subscription;
-  posts: Post[];
-  firstName: string | null;
-  lastName: string | null;
-  lastSubscriptionChange: Date | null;
-  avatar?: string;
-};
+  limit: number;
+  subscriptions: Subscription[];
+  subscriptionName: SubscriptionName;
+}
+
+export interface UploadSize {
+  id: number;
+  createdAt: Date;
+  updatedAt: Date;
+  size: number;
+  subscriptions: Subscription[];
+  subscriptionName: SubscriptionName;
+}
 
 export type Role = "USER" | "ADMIN";
 

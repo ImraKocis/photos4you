@@ -10,3 +10,5 @@ export const useUser = () => useSelector((state: RootState) => state.user.user);
 export const useAuth = () => useSelector((state: RootState) => state.auth.auth);
 export const useIsNavigationOpen = () =>
   useSelector((state: RootState) => state.navigationBar.isOpen);
+export const useSubscription = () =>
+  useSelector((state: RootState) => state.subscription.subscription);

@@ -6,9 +6,39 @@ import { AuthWrapper } from "@/app/ui/auth/auth-page-wrapper";
 import { SmallPostGrid } from "@/app/ui/post/small-post-grid";
 import { getUserPosts } from "@/app/actions/post/actions";
 import Loading from "@/app/loading";
+import {
+  getDailyLimits,
+  getUploadSizes,
+} from "@/app/actions/subscription/actions";
+import { DailyLimit, UploadSize } from "@/lib/types/user";
+
+function handleSubscriptionCardBenefits(
+  dailyLimits?: DailyLimit,
+  uploadSizes?: UploadSize,
+) {
+  return [
+    `Upload ${dailyLimits?.limit} photos per day`,
+    `Maximum photo size ${uploadSizes?.size}MB`,
+  ];
+}
+
+function handlePrice(dailyLimit: DailyLimit | null): string {
+  switch (dailyLimit?.subscriptionName) {
+    case "FREE":
+      return "0";
+    case "PRO":
+      return "5.99";
+    case "GOLD":
+      return "9.99";
+    default:
+      return "0";
+  }
+}
 
 export default async function ProfilePage(): Promise<ReactElement> {
   const userPosts = await getUserPosts();
+  const uploadSizes = await getUploadSizes();
+  const dailyLimits = await getDailyLimits();
   return (
     <Suspense fallback={<Loading />}>
       <AuthWrapper>
@@ -18,21 +48,22 @@ export default async function ProfilePage(): Promise<ReactElement> {
             <UserPersonalInformationForm />
           </section>
           <section className="grid grid-cols-3 gap-6 mb-8">
-            <SubscriptionCard
-              title="FREE"
-              price="0"
-              benefits={["Upload 5 photos per day", "Maximum photo size 2MB"]}
-            />
-            <SubscriptionCard
-              title="PRO"
-              price="5.99"
-              benefits={["Upload 7 photos per day", "Maximum photo size 3MB"]}
-            />
-            <SubscriptionCard
-              title="GOLD"
-              price="9.99"
-              benefits={["Upload 10 photos per day", "Maximum photo size 5MB"]}
-            />
+            {dailyLimits?.map((dailyLimit, index) => (
+              <React.Fragment key={index}>
+                <SubscriptionCard
+                  title={dailyLimit.subscriptionName}
+                  price={handlePrice(dailyLimit)}
+                  benefits={handleSubscriptionCardBenefits(
+                    dailyLimit,
+                    uploadSizes?.find(
+                      (element) =>
+                        element.subscriptionName ===
+                        dailyLimit.subscriptionName,
+                    ),
+                  )}
+                />
+              </React.Fragment>
+            ))}
           </section>
           <section>
             <SmallPostGrid posts={userPosts} />
