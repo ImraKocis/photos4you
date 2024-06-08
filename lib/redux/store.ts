@@ -2,6 +2,9 @@ import { Action, configureStore, ThunkAction } from "@reduxjs/toolkit";
 import userReducer from "./features/userSlice";
 import authReducer from "./features/authSlice";
 import navigationBarReducer from "./features/navigationBarSlice";
+import subscriptionReducer from "./features/subscriptionSlice";
+
+// State
 
 export const makeStore = () => {
   return configureStore({
@@ -9,6 +12,7 @@ export const makeStore = () => {
       user: userReducer,
       auth: authReducer,
       navigationBar: navigationBarReducer,
+      subscription: subscriptionReducer,
     },
   });
 };

@@ -25,10 +25,30 @@ import { Dispatch } from "redux";
 import { set } from "@/lib/redux/features/navigationBarSlice";
 import { CreatePostDialog } from "@/app/ui/navigation/create-post-dialog";
 import { AlertDialogProvider } from "@/app/ui/navigation/alert-dialog-context";
+import { Images, Users } from "lucide-react";
+import { PiFilesLight } from "react-icons/pi";
 
 const content: LinkContent[] = [
   { title: "Home", href: "/", icon: <IoHome className="w-6 h-6" /> },
   { title: "Search", href: "/search", icon: <IoSearch className="w-6 h-6" /> },
+];
+
+const adminContent: LinkContent[] = [
+  {
+    title: "Users",
+    href: "/admin/users",
+    icon: <Users className="w-6 h-6" />,
+  },
+  {
+    title: "Posts",
+    href: "/admin/posts",
+    icon: <Images className="w-6 h-6" />,
+  },
+  {
+    title: "Logs",
+    href: "/admin/logs",
+    icon: <PiFilesLight className="w-6 h-6" />,
+  },
 ];
 
 interface LinkContent {
@@ -67,7 +87,7 @@ export function SideNavigation() {
             )}
           </button>
         </div>
-        <div className="w-full">
+        <div className="w-full mb-12">
           <ul className="flex flex-col gap-2">
             {content.map((item, index) => (
               <li key={index}>
@@ -122,6 +142,40 @@ export function SideNavigation() {
             ) : null}
           </ul>
         </div>
+        {user && user.role === "ADMIN" ? (
+          <div className="w-full">
+            <h2
+              className={twMerge(
+                "text-xl p-3 transition duration-300 ease-in-out",
+                isOpen ? "opacity-100" : "opacity-0 -z-50",
+              )}
+            >
+              Admin
+            </h2>
+            <ul className="flex flex-col gap-2">
+              {adminContent.map((item, index) => (
+                <li key={index}>
+                  <Link href={item.href} className="flex items-center">
+                    <button className="flex p-2 justify-center items-center">
+                      {item.icon}
+                    </button>
+
+                    <span
+                      className={twMerge(
+                        "transition ml-2 duration-300 ease-in-out",
+                        isOpen
+                          ? "opacity-100"
+                          : "opacity-0 pointer-events-none -z-50",
+                      )}
+                    >
+                      {item.title}
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
       </section>
       <section className="w-full mb-4">
         {!user ? (

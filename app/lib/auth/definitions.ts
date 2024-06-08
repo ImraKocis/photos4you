@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const SubscriptionRoles = ["FREE", "PRO", "GOLD"] as const;
+export const SubscriptionRoles = ["FREE", "PRO", "GOLD"] as const;
 
 export const registerFormSchema = z
   .object({

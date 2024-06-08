@@ -27,7 +27,7 @@ interface UpdatePostData {
 
 export async function getAllPosts(): Promise<PostExtended[] | null> {
   const response = await fetch(`${process.env.API_BASE_URL}/post/all`, {
-    next: { revalidate: 10 },
+    next: { revalidate: 10, tags: ["posts"] },
   });
   if (!response.ok) return null;
   return await response.json();
@@ -103,11 +103,21 @@ export async function updatePost(
       Authorization: `Bearer ${tokens.jwt}`,
     },
   });
-  console.log(response);
   if (!response.ok) return null;
-  const res = await response.json();
-  console.log(res);
-  return res;
+  return await response.json();
+}
+
+export async function deletePost(id: string): Promise<boolean | null> {
+  const session = await getSession();
+  const response = await fetch(`${process.env.API_BASE_URL}/post/${id}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${session.jwt}`,
+    },
+  });
+  const json = await response.json();
+  if (!response.ok) return null;
+  return json;
 }
 
 export async function getHashtags(): Promise<string[] | null> {

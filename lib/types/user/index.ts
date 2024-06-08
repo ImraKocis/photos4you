@@ -8,8 +8,8 @@ export interface User {
   role: Role;
   subscription: Subscription;
   posts: Post[];
-  firstName: string | null;
-  lastName: string | null;
+  firstName: string;
+  lastName: string;
   lastSubscriptionChange: Date | null;
   avatar?: string;
 }
@@ -24,6 +24,26 @@ export interface Subscription {
   uploadSizeId: number;
   userId: number;
   validFrom: Date;
+  DailyLimit: DailyLimit;
+  UploadSize: UploadSize;
+}
+
+export interface DailyLimit {
+  id: number;
+  createdAt: Date;
+  updatedAt: Date;
+  limit: number;
+  subscriptions: Subscription[];
+  subscriptionName: SubscriptionName;
+}
+
+export interface UploadSize {
+  id: number;
+  createdAt: Date;
+  updatedAt: Date;
+  size: number;
+  subscriptions: Subscription[];
+  subscriptionName: SubscriptionName;
 }
 
 export type Role = "USER" | "ADMIN";

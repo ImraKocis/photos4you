@@ -1,35 +1,12 @@
 "use server";
 
-import { AWSUrlProps, S3Image } from "@/lib/types/image";
-
-export async function getUserImages(id?: string): Promise<S3Image[] | null> {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/api/image/?userId=${id}`,
-  );
-  if (response.ok) {
-    const data = await response.json();
-    return data.images;
-  }
-  return null;
-}
+import { AWSUrlProps, S3Image, S3ImageResponse } from "@/lib/types/image";
 
 export async function getImageUrlData(): Promise<AWSUrlProps> {
   return {
     bucket: process.env.AWS_BUCKET_NAME!!,
     region: process.env.AWS_REGION!!,
   };
-}
-
-export async function getAllImages(): Promise<S3Image[] | null> {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/api/image`,
-    { next: { revalidate: 5 } },
-  );
-  if (response.ok) {
-    const data = await response.json();
-    return data.images;
-  }
-  return null;
 }
 
 export async function getImagesWithUserId(
@@ -39,8 +16,12 @@ export async function getImagesWithUserId(
     `${process.env.NEXT_PUBLIC_BASE_URL}/api/image?id=${id}`,
   );
   if (response.ok) {
-    const data = await response.json();
-    return data.images;
+    const data: S3ImageResponse = await response.json();
+    return data.images.sort((a, b) => {
+      return (
+        new Date(b.LastModified).getTime() - new Date(a.LastModified).getTime()
+      );
+    });
   }
   return null;
 }

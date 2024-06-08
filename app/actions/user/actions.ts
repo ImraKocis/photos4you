@@ -18,6 +18,18 @@ export async function getUser(): Promise<User | null> {
   return null;
 }
 
+export async function getUserById(id: number): Promise<User | null> {
+  const session = await getSession();
+  const response = await fetch(`${process.env.API_BASE_URL}/user/${id}`, {
+    headers: {
+      Authorization: `Bearer ${session.jwt}`,
+    },
+  });
+
+  if (!response.ok) return null;
+  return await response.json();
+}
+
 export async function updateUserPersonalData(data: {
   firstName: string;
   lastName: string;
