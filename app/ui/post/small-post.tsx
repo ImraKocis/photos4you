@@ -19,15 +19,15 @@ export function SmallPost(props: PostExtended): ReactElement {
     <AlertDialog open={isSmallPostDialogOpen}>
       <AlertDialogTrigger asChild>
         <div
-          className="flex w-[128px] h-[128px] relative cursor-pointer"
+          className="flex w-[150px] h-[128px] relative cursor-pointer"
           onClick={() => setIsSmallPostDialogOpen(true)}
         >
           <Image
             src={props.image.url}
             alt={props.user?.firstName ? props.user.firstName : ""}
-            width={300}
-            height={300}
-            className="rounded-sm"
+            fill
+            style={{ objectPosition: "center" }}
+            className="rounded-sm h-full w-full"
           />
         </div>
       </AlertDialogTrigger>

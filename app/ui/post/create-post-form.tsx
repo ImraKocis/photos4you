@@ -33,18 +33,16 @@ import { useAlertDialogContext } from "@/app/ui/navigation/alert-dialog-context"
 import { Subscription, User } from "@/lib/types/user";
 
 function handlePostCreationAbilityByLimit(
-  user: User | null,
-  subscription: Subscription | null,
+  user: User,
+  subscription: Subscription,
 ): boolean {
-  if (!user || !subscription) return false;
-  const { DailyLimit } = subscription;
-  const oneDay = 24 * 60 * 60 * 1000;
+  const oneDay = 1000 * 3600 * 24;
   const todayPosts = user.posts.filter(
     (post) =>
       new Date().getTime() - new Date(post.createdAt).getTime() <= oneDay,
   );
 
-  return todayPosts.length < DailyLimit.limit;
+  return todayPosts.length < subscription.DailyLimit.limit;
 }
 
 function handlePostCreationAbilityBySize(
@@ -87,6 +85,15 @@ export function CreatePostForm(): ReactElement {
         variant: "destructive",
         title: "Your session has expired",
         description: "Please login again",
+      });
+      return;
+    }
+
+    if (!subscription) {
+      toast({
+        variant: "destructive",
+        title: "Something went wrong with publishing your post",
+        description: "Please refresh the page and try again",
       });
       return;
     }
