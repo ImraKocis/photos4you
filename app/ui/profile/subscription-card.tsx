@@ -26,16 +26,16 @@ interface SubscriptionCardProps {
 }
 
 const handleIsCardDisabledByDate = (user: User | null): boolean => {
-  const oneDay = 1000 * 3600 * 24;
-  // never changed
-  if (user?.lastSubscriptionChange == null) return false;
-  //changed less than 24h ago
-  else if (
-    oneDay - new Date(user.lastSubscriptionChange).getTime() >=
-    new Date().getTime()
-  )
-    return false;
-  return true;
+  // User dose not exists
+  if (!user) return true;
+  // Never changed
+  if (user?.lastSubscriptionChange === null) return false;
+  const currentTime = new Date();
+  const lastChangeTime = new Date(user.lastSubscriptionChange);
+  const timeDifference = currentTime.getTime() - lastChangeTime.getTime();
+  const hoursDifference = timeDifference / (1000 * 60 * 60);
+
+  return hoursDifference <= 24;
 };
 
 const handleOldSubscription = (user: User | null): boolean => {

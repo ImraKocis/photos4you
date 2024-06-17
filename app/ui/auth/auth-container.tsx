@@ -14,11 +14,12 @@ import {
 } from "@/app/actions/auth/actions";
 import { validate } from "uuid";
 import { AuthProvider, AuthResponse } from "@/lib/types/auth";
-import { toast } from "@/components/ui/use-toast";
 import { AppStore } from "@/lib/redux/store";
 import { set as setAuth } from "@/lib/redux/features/authSlice";
 import { set as setUser } from "@/lib/redux/features/userSlice";
+import { set as setSubscription } from "@/lib/redux/features/subscriptionSlice";
 import { getUser } from "@/app/actions/user/actions";
+import { getSubscription } from "@/app/actions/subscription/actions";
 
 export const googleAuthWindow = async (
   store: AppStore,
@@ -63,7 +64,9 @@ const loginProvider = async (
   const response = await loginWithProvider(id, provider);
   store?.dispatch(setAuth(response));
   const user = await getUser();
+  const subscription = await getSubscription(user?.subscription.id.toString());
   store?.dispatch(setUser(user));
+  store?.dispatch(setSubscription(subscription));
   return response;
 };
 
