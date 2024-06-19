@@ -61,14 +61,14 @@ export function Post(props: PostExtended): ReactElement {
   const now = moment();
   const isMoreThanTwoDaysOld = now.diff(postDate, "hours") > 24;
   return (
-    <Card className="w-full flex flex-col min-w-[400px] rounded-lg">
-      <div className="basis-2/3 min-w-[400px] min-h-[300px] relative">
+    <Card className="w-full flex flex-col min-w-[400px] h-[600px] rounded-lg">
+      <div className="basis-2/3 w-full h-full relative">
         <Image
-          className="w-full h-full rounded-t-lg"
+          className="rounded-t-lg"
           fill
           src={props.image.url}
           alt={props.user.firstName ? props.user.firstName : ""}
-          style={{ objectPosition: "center" }}
+          style={{ objectPosition: "top", objectFit: "cover" }}
         />
       </div>
       <CardContent className="p-4 grid gap-2 basis-1/3">
