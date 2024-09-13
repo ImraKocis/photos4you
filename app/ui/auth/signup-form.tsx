@@ -28,16 +28,14 @@ import {
   ProviderLogo,
   ProviderLogoContainer,
 } from "@/app/ui/auth/provider-logo";
-import {
-  githubAuthWindow,
-  googleAuthWindow,
-} from "@/app/ui/auth/auth-container";
-import { registerFormSchema } from "@/app/lib/auth/definitions";
+import { registerFormSchema } from "@/lib/auth/definitions";
 import { useDispatch, useStore } from "react-redux";
 import { set as setAuth } from "@/lib/redux/features/authSlice";
 import { set as setUser } from "@/lib/redux/features/userSlice";
 import { RootState } from "@/lib/redux/store";
 import { getUser } from "@/app/actions/user/actions";
+import { googleAuthWindow } from "@/lib/auth/functions/google-auth-window";
+import { githubAuthWindow } from "@/lib/auth/functions/github-auth-window";
 
 export function SignupForm() {
   const { toast } = useToast();

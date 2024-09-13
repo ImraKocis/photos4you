@@ -51,7 +51,7 @@ export function SubscriptionCard({
   title,
   price,
   benefits,
-}: SubscriptionCardProps): ReactElement | null {
+}: Readonly<SubscriptionCardProps>): ReactElement | null {
   const user = useUser();
   const dispatch = useDispatch();
   const { toast } = useToast();

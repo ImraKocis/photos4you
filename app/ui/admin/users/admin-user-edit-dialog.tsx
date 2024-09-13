@@ -7,10 +7,10 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 export function AdminUserEditDialog({
   children,
   user,
-}: {
+}: Readonly<{
   children: ReactNode;
   user: User;
-}): ReactElement {
+}>): ReactElement {
   return (
     <Dialog>
       <DialogTrigger asChild>{children}</DialogTrigger>

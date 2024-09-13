@@ -11,23 +11,21 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useSmallPostAlertDialogContext } from "@/app/ui/post/small-post-dialog-context";
 
-export function SmallPost(props: PostExtended): ReactElement {
+export function SmallPost(props: Readonly<PostExtended>): ReactElement {
   const { isSmallPostDialogOpen, setIsSmallPostDialogOpen } =
     useSmallPostAlertDialogContext();
 
   return (
     <AlertDialog open={isSmallPostDialogOpen}>
       <AlertDialogTrigger asChild>
-        <div
-          className="flex w-[150px] h-[128px] relative cursor-pointer"
-          onClick={() => setIsSmallPostDialogOpen(true)}
-        >
+        <div className="flex w-[150px] h-[128px] relative cursor-pointer">
           <Image
             src={props.image.url}
             alt={props.user?.firstName ? props.user.firstName : ""}
             fill
             style={{ objectPosition: "center" }}
             className="rounded-sm h-full w-full"
+            onClick={() => setIsSmallPostDialogOpen(true)}
           />
         </div>
       </AlertDialogTrigger>

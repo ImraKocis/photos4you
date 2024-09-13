@@ -24,7 +24,7 @@ interface DataTableProps<TData, TValue> {
 export function UsersTable<TData, TValue>({
   columns,
   data,
-}: DataTableProps<TData, TValue>) {
+}: Readonly<DataTableProps<TData, TValue>>) {
   const table = useReactTable({
     data,
     columns,

@@ -4,72 +4,9 @@ import { SignupForm } from "@/app/ui/auth/signup-form";
 import { LoginForm } from "@/app/ui/auth/login-form";
 import { twMerge } from "tailwind-merge";
 import { Button } from "@/components/ui/button";
-import "./auth-container.css";
+import "./styles/auth-container.css";
 import { X } from "lucide-react";
 import { AlertDialogCancel } from "@/components/ui/alert-dialog";
-import {
-  getGithubLoginProps,
-  getGoogleLoginProps,
-  loginWithProvider,
-} from "@/app/actions/auth/actions";
-import { validate } from "uuid";
-import { AuthProvider, AuthResponse } from "@/lib/types/auth";
-import { AppStore } from "@/lib/redux/store";
-import { set as setAuth } from "@/lib/redux/features/authSlice";
-import { set as setUser } from "@/lib/redux/features/userSlice";
-import { set as setSubscription } from "@/lib/redux/features/subscriptionSlice";
-import { getUser } from "@/app/actions/user/actions";
-import { getSubscription } from "@/app/actions/subscription/actions";
-
-export const googleAuthWindow = async (
-  store: AppStore,
-): Promise<AuthResponse | null> => {
-  const { url, state } = await getGoogleLoginProps();
-  const authWindow = window.open(url, "", "popup=true");
-  if (authWindow) {
-    const checkWindow = setInterval(async () => {
-      if (authWindow.closed) {
-        clearInterval(checkWindow);
-        if (state && validate(state))
-          return await loginProvider(state, "google", store);
-      }
-    }, 100);
-  }
-  return null;
-};
-
-export const githubAuthWindow = async (
-  store: AppStore,
-): Promise<AuthResponse | null> => {
-  const { url, state } = await getGithubLoginProps();
-  const authWindow = window.open(url, "", "popup=true");
-  if (authWindow) {
-    const checkWindow = setInterval(async () => {
-      if (authWindow.closed) {
-        clearInterval(checkWindow);
-        if (state && validate(state)) {
-          return await loginProvider(state, "github", store);
-        }
-      }
-    }, 100);
-  }
-  return null;
-};
-
-const loginProvider = async (
-  id: string,
-  provider: AuthProvider,
-  store?: AppStore,
-) => {
-  const response = await loginWithProvider(id, provider);
-  store?.dispatch(setAuth(response));
-  const user = await getUser();
-  const subscription = await getSubscription(user?.subscription.id.toString());
-  store?.dispatch(setUser(user));
-  store?.dispatch(setSubscription(subscription));
-  return response;
-};
-
 export function AuthContainer(): ReactElement {
   const [isActive, setIsActive] = useState(false);
 

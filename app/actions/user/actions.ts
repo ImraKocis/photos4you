@@ -1,12 +1,14 @@
 "use server";
 
 import { User } from "@/lib/types/user";
-import { getSession, getSessionUserId } from "@/app/lib/auth/session";
+import {
+  getSession,
+  getSessionUserId,
+} from "@/app/lib-server-only/auth/session";
 
 export async function getUser(): Promise<User | null> {
   const tokens = await getSession();
   const { id } = await getSessionUserId();
-  if (!tokens.jwt) return null;
   const response = await fetch(`${process.env.API_BASE_URL}/user/${id}`, {
     method: "GET",
     headers: {
@@ -14,8 +16,8 @@ export async function getUser(): Promise<User | null> {
     },
   });
 
-  if (response.ok) return await response.json();
-  return null;
+  if (!response.ok) return null;
+  return await response.json();
 }
 
 export async function getUserById(id: number): Promise<User | null> {
@@ -35,29 +37,24 @@ export async function updateUserPersonalData(data: {
   lastName: string;
   id?: number;
 }): Promise<User | null> {
-  console.log(data);
   const tokens = await getSession();
-  if (!tokens.jwt) return null;
-  try {
-    const response = await fetch(
-      `${process.env.API_BASE_URL}/user/update/personal`,
-      {
-        method: "PATCH",
-        headers: {
-          "Content-type": "application/json",
-          Authorization: `Bearer ${tokens.jwt}`,
-        },
-        body: JSON.stringify({
-          id: data.id?.toString(),
-          firstName: data.firstName,
-          lastName: data.lastName,
-        }),
-      },
-    );
 
-    if (response.ok) return await response.json();
-  } catch (e) {
-    console.log(e);
-  }
-  return null;
+  const response = await fetch(
+    `${process.env.API_BASE_URL}/user/update/personal`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${tokens.jwt}`,
+      },
+      body: JSON.stringify({
+        id: data.id?.toString(),
+        firstName: data.firstName,
+        lastName: data.lastName,
+      }),
+    },
+  );
+
+  if (!response.ok) return null;
+  return await response.json();
 }

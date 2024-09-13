@@ -4,7 +4,7 @@ import { ReactElement, useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { createPostFormSchema } from "@/app/lib/post/definitions";
+import { createPostFormSchema } from "@/lib/post/definitions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,

@@ -21,16 +21,14 @@ import {
   ProviderLogoContainer,
 } from "@/app/ui/auth/provider-logo";
 import { FaGithub, FaGoogle } from "react-icons/fa";
-import {
-  githubAuthWindow,
-  googleAuthWindow,
-} from "@/app/ui/auth/auth-container";
-import { loginFormSchema } from "@/app/lib/auth/definitions";
+import { loginFormSchema } from "@/lib/auth/definitions";
 import { useDispatch, useStore } from "react-redux";
 import { RootState } from "@/lib/redux/store";
 import { set as setAuth } from "@/lib/redux/features/authSlice";
 import { set as setUser } from "@/lib/redux/features/userSlice";
 import { getUser } from "@/app/actions/user/actions";
+import { googleAuthWindow } from "@/lib/auth/functions/google-auth-window";
+import { githubAuthWindow } from "@/lib/auth/functions/github-auth-window";
 
 export function LoginForm() {
   const { toast } = useToast();
@@ -49,10 +47,12 @@ export function LoginForm() {
     dispatch(setAuth(response));
     const user = await getUser();
     dispatch(setUser(user));
-    if (response && response.ok) {
-      dispatch(setAuth(response));
-      const user = await getUser();
-      dispatch(setUser(user));
+    if (response) {
+      if (response.ok) {
+        dispatch(setAuth(response));
+        const user = await getUser();
+        dispatch(setUser(user));
+      }
     } else {
       toast({
         variant: "destructive",

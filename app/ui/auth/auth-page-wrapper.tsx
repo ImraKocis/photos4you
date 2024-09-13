@@ -1,5 +1,5 @@
 import { ReactElement, ReactNode } from "react";
-import { getSession } from "@/app/lib/auth/session";
+import { getSession } from "@/app/lib-server-only/auth/session";
 import { SessionExpired } from "@/app/ui/auth/session-expired";
 
 export async function AuthWrapper({

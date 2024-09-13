@@ -7,10 +7,10 @@ import { AdminPostEditForm } from "@/app/ui/admin/posts/admin-post-edit-form";
 export function AdminPostEditDialog({
   children,
   post,
-}: {
+}: Readonly<{
   children: ReactNode;
   post: PostExtended;
-}): ReactElement {
+}>): ReactElement {
   return (
     <Dialog>
       <DialogTrigger asChild>{children}</DialogTrigger>

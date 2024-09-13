@@ -8,10 +8,10 @@ import { ImageDownloadProvider } from "@/app/ui/image/image-download-context";
 export function AdminPostPreviewDialog({
   children,
   post,
-}: {
+}: Readonly<{
   children: ReactNode;
   post: PostExtended;
-}): ReactElement {
+}>): ReactElement {
   return (
     <Dialog>
       <DialogTrigger asChild>{children}</DialogTrigger>

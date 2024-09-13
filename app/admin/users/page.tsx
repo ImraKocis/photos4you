@@ -1,5 +1,5 @@
 import { ReactElement } from "react";
-import AdminPageWrapper from "@/app/ui/auth/admin-page-wrapper";
+import AdminPageWrapper from "@/app/ui/auth/admin/admin-page-wrapper";
 import { getUsers } from "@/app/actions/admin/users";
 import { UsersTable } from "@/app/ui/admin/data-table";
 import { userTableColumns } from "@/app/ui/admin/users/columns";
@@ -15,7 +15,7 @@ export default async function AdminUsers(): Promise<ReactElement> {
           <h1 className="text-3xl font-bold">Users</h1>
           <RevalidateTable tag="users" />
         </div>
-        <UsersTable columns={userTableColumns} data={users!!} />
+        <UsersTable columns={userTableColumns} data={users!} />
       </div>
     </AdminPageWrapper>
   );

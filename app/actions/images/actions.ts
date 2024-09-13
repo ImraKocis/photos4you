@@ -4,8 +4,8 @@ import { AWSUrlProps, S3Image, S3ImageResponse } from "@/lib/types/image";
 
 export async function getImageUrlData(): Promise<AWSUrlProps> {
   return {
-    bucket: process.env.AWS_BUCKET_NAME!!,
-    region: process.env.AWS_REGION!!,
+    bucket: process.env.AWS_BUCKET_NAME!,
+    region: process.env.AWS_REGION!,
   };
 }
 

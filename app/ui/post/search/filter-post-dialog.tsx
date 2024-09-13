@@ -45,9 +45,9 @@ export function FilterPostDialog(): ReactElement {
     setIsSearching(true);
     const posts = await getFilterPosts({
       size: imageSize ? imageSize * 1024 * 1024 : undefined,
-      createdAt: postDate ? postDate : undefined,
-      fullName: postAuthor ? postAuthor : undefined,
-      hashtag: postHashtag ? postHashtag : undefined,
+      createdAt: postDate ?? undefined,
+      fullName: postAuthor ?? undefined,
+      hashtag: postHashtag ?? undefined,
     });
     if (posts && posts.length > 0) {
       setPosts(posts);

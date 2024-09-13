@@ -6,7 +6,7 @@ import { useState } from "react";
 import { twMerge } from "tailwind-merge";
 import { revalidateTable } from "@/app/actions/admin/users";
 
-export function RevalidateTable({ tag }: { tag: string }) {
+export function RevalidateTable({ tag }: Readonly<{ tag: string }>) {
   const [clicked, setClicked] = useState(false);
   return (
     <Button
