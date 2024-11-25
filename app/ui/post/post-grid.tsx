@@ -9,16 +9,16 @@ interface PostGridProps {
   posts: PostExtended[] | null;
 }
 
-export function PostGrid({ posts }: PostGridProps): ReactElement {
+export function PostGrid({ posts }: Readonly<PostGridProps>): ReactElement {
   return (
     <div className="grid 2xl:grid-cols-3 xl:grid-cols-2 lg:grid-cols-1 gap-8">
-      <ImageDownloadProvider>
-        {posts?.map((post, index) => (
-          <React.Fragment key={index}>
+      {posts?.map((post, index) => (
+        <React.Fragment key={post.id}>
+          <ImageDownloadProvider>
             <Post {...post} />
-          </React.Fragment>
-        ))}
-      </ImageDownloadProvider>
+          </ImageDownloadProvider>
+        </React.Fragment>
+      ))}
     </div>
   );
 }

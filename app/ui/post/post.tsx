@@ -24,7 +24,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { imageOptions, imageTypes } from "@/app/lib/image/image";
+import { imageOptions, imageTypes } from "@/lib/image/image";
 import { useImageDownloadContext } from "@/app/ui/image/image-download-context";
 import moment from "moment";
 

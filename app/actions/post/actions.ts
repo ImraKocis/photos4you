@@ -1,29 +1,12 @@
 "use server";
 
 import { Post, PostExtended } from "@/lib/types/post";
-import { getSession } from "@/app/lib/auth/session";
-
-interface FilterPostsQueryData {
-  size?: number;
-  createdAt?: Date;
-  hashtag?: string;
-  fullName?: string;
-}
-
-interface CreatePostData {
-  userId: string;
-  description: string;
-  hashtags: string[];
-  image: {
-    url: string;
-    size: string;
-  };
-}
-
-interface UpdatePostData {
-  description?: string;
-  hashtags?: string[];
-}
+import { getSession } from "@/app/lib-server-only/auth/session";
+import {
+  CreatePostData,
+  FilterPostsQueryData,
+  UpdatePostData,
+} from "@/app/actions/post/interface/post-actions-interfaces";
 
 export async function getAllPosts(): Promise<PostExtended[] | null> {
   const response = await fetch(`${process.env.API_BASE_URL}/post/all`, {
@@ -36,6 +19,7 @@ export async function getAllPosts(): Promise<PostExtended[] | null> {
 export async function createPost(data: CreatePostData): Promise<Post | null> {
   const tokens = await getSession();
   if (!tokens.jwt) return null;
+
   const response = await fetch(`${process.env.API_BASE_URL}/post/create`, {
     method: "POST",
     headers: {
@@ -52,25 +36,15 @@ export async function getLatestPosts(): Promise<PostExtended[] | null> {
   const response = await fetch(`${process.env.API_BASE_URL}/post/latest`, {
     next: { revalidate: 5 },
   });
+
   if (!response.ok) return null;
   return await response.json();
 }
 
-export async function getFilterPosts({
-  size,
-  fullName,
-  hashtag,
-  createdAt,
-}: FilterPostsQueryData): Promise<PostExtended[] | null> {
-  const queryData = new URLSearchParams();
-  if (fullName) queryData.append("fullName", fullName);
-
-  if (hashtag) queryData.append("hashtag", hashtag);
-
-  if (size) queryData.append("size", size.toString());
-
-  if (createdAt) queryData.append("createdAt", createdAt.toISOString());
-
+export async function getFilterPosts(
+  data: FilterPostsQueryData,
+): Promise<PostExtended[] | null> {
+  const queryData = handleQueryData(data);
   const response = await fetch(
     `${process.env.API_BASE_URL}/post/find?` + queryData,
   );
@@ -86,6 +60,7 @@ export async function getUserPosts(): Promise<PostExtended[] | null> {
       Authorization: `Bearer ${tokens.jwt}`,
     },
   });
+
   if (!response.ok) return null;
   return await response.json();
 }
@@ -103,6 +78,7 @@ export async function updatePost(
       Authorization: `Bearer ${tokens.jwt}`,
     },
   });
+
   if (!response.ok) return null;
   return await response.json();
 }
@@ -115,13 +91,29 @@ export async function deletePost(id: string): Promise<boolean | null> {
       Authorization: `Bearer ${session.jwt}`,
     },
   });
-  const json = await response.json();
+
   if (!response.ok) return null;
-  return json;
+  return await response.json();
 }
 
 export async function getHashtags(): Promise<string[] | null> {
   const response = await fetch(`${process.env.API_BASE_URL}/post/hashtags`);
   if (!response.ok) return null;
   return await response.json();
+}
+
+function handleQueryData({
+  fullName,
+  hashtag,
+  createdAt,
+  size,
+}: FilterPostsQueryData): URLSearchParams {
+  const queryData = new URLSearchParams();
+
+  if (fullName) queryData.append("fullName", fullName);
+  if (hashtag) queryData.append("hashtag", hashtag);
+  if (size) queryData.append("size", size.toString());
+  if (createdAt) queryData.append("createdAt", createdAt.toISOString());
+
+  return queryData;
 }

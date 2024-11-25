@@ -5,6 +5,7 @@ import React, {
   ReactNode,
   Dispatch,
   SetStateAction,
+  useMemo,
 } from "react";
 
 interface ImageDownloadContextProps {
@@ -26,15 +27,17 @@ export const ImageDownloadProvider = ({
   const [imageType, setImageType] = useState<string>("original");
   const [imageFormat, setImageFormat] = useState<string>("jpg");
 
+  const contextValue = useMemo(
+    () => ({
+      imageType,
+      setImageType,
+      imageFormat,
+      setImageFormat,
+    }),
+    [imageType, setImageType, imageFormat, setImageFormat],
+  );
   return (
-    <ImageDownloadContext.Provider
-      value={{
-        imageType,
-        setImageType,
-        imageFormat,
-        setImageFormat,
-      }}
-    >
+    <ImageDownloadContext.Provider value={contextValue}>
       {children}
     </ImageDownloadContext.Provider>
   );

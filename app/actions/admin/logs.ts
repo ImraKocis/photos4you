@@ -1,6 +1,6 @@
 "use server";
 
-import { getSession } from "@/app/lib/auth/session";
+import { getSession } from "@/app/lib-server-only/auth/session";
 import { Logs } from "@/lib/types/logs";
 
 export async function getLogs(): Promise<Logs[] | null> {

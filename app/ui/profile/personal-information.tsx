@@ -3,7 +3,7 @@ import { ReactElement, useEffect, useState } from "react";
 import { useUser } from "@/lib/redux/hooks";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { userDataSchema } from "@/app/lib/auth/definitions";
+import { userDataSchema } from "@/lib/auth/definitions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { updateUserPersonalData } from "@/app/actions/user/actions";
 import { set as setUser } from "@/lib/redux/features/userSlice";

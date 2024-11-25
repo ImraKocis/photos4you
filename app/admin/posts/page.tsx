@@ -1,5 +1,5 @@
 import { ReactElement } from "react";
-import AdminPageWrapper from "@/app/ui/auth/admin-page-wrapper";
+import AdminPageWrapper from "@/app/ui/auth/admin/admin-page-wrapper";
 import { RevalidateTable } from "@/app/ui/admin/users/revalidate-table";
 import { getAllPosts } from "@/app/actions/post/actions";
 import { UsersTable } from "@/app/ui/admin/data-table";
@@ -15,7 +15,7 @@ export default async function AdminPosts(): Promise<ReactElement> {
           <h1 className="text-3xl font-bold">Posts</h1>
           <RevalidateTable tag="posts" />
         </div>
-        <UsersTable columns={postColumns} data={posts!!} />
+        <UsersTable columns={postColumns} data={posts!} />
       </div>
     </AdminPageWrapper>
   );

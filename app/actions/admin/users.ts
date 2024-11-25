@@ -1,8 +1,13 @@
 "use server";
 
-import { getSession } from "@/app/lib/auth/session";
+import { getSession } from "@/app/lib-server-only/auth/session";
 import { Subscription, User } from "@/lib/types/user";
 import { revalidateTag } from "next/cache";
+import {
+  UpdateAdminUserProps,
+  UpdateAdminUserSubscriptionProps,
+  UpdateUserRoleProps,
+} from "@/app/actions/admin/interface/user-actions-interfaces";
 
 export async function getUsers(): Promise<User[] | null> {
   const session = await getSession();
@@ -25,12 +30,9 @@ export async function revalidateTable(tag: string) {
   revalidateTag(tag);
 }
 
-export async function updateAdminUser(data: {
-  id: number;
-  firstName?: string;
-  lastName?: string;
-}): Promise<User | null> {
-  console.log(data);
+export async function updateAdminUser(
+  data: UpdateAdminUserProps,
+): Promise<User | null> {
   const session = await getSession();
   const response = await fetch(
     `${process.env.API_BASE_URL}/user/update/personal`,
@@ -53,14 +55,10 @@ export async function updateAdminUser(data: {
   return await response.json();
 }
 
-export async function updateAdminUserSubscription(data: {
-  id: number;
-  subscriptionId: number;
-  subscription: string;
-  oldSubscription: string;
-}): Promise<Subscription | null> {
+export async function updateAdminUserSubscription(
+  data: UpdateAdminUserSubscriptionProps,
+): Promise<Subscription | null> {
   const session = await getSession();
-  console.log(data);
   const response = await fetch(
     `${process.env.API_BASE_URL}/user/update/subscription`,
     {
@@ -93,10 +91,9 @@ export async function deleteUser(id: number): Promise<boolean> {
   return response.ok;
 }
 
-export async function updateUserRole(data: {
-  id: number;
-  role: string;
-}): Promise<User | null> {
+export async function updateUserRole(
+  data: UpdateUserRoleProps,
+): Promise<User | null> {
   const session = await getSession();
   const response = await fetch(`${process.env.API_BASE_URL}/user/update/role`, {
     method: "PATCH",

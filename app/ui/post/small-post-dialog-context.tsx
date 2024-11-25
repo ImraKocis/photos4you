@@ -5,6 +5,7 @@ import React, {
   ReactNode,
   Dispatch,
   SetStateAction,
+  useMemo,
 } from "react";
 
 interface SmallPostAlertDialogContextProps {
@@ -24,13 +25,16 @@ export const SmallPostAlertDialogProvider = ({
   const [isSmallPostDialogOpen, setIsSmallPostDialogOpen] =
     useState<boolean>(false);
 
+  const contextValue = useMemo(
+    () => ({
+      isSmallPostDialogOpen,
+      setIsSmallPostDialogOpen,
+    }),
+    [isSmallPostDialogOpen, setIsSmallPostDialogOpen],
+  );
+
   return (
-    <SmallPostAlertDialogContext.Provider
-      value={{
-        isSmallPostDialogOpen,
-        setIsSmallPostDialogOpen,
-      }}
-    >
+    <SmallPostAlertDialogContext.Provider value={contextValue}>
       {children}
     </SmallPostAlertDialogContext.Provider>
   );

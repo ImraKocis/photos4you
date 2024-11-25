@@ -1,4 +1,5 @@
 import "server-only";
+
 import { cookies } from "next/headers";
 import { Session, SessionCookie } from "@/lib/types/auth";
 
@@ -23,28 +24,6 @@ export async function createSession(payload: SessionCookie) {
   });
 
   cookies().set("user-id", payload.id.toString(), {
-    httpOnly: true,
-    secure: true,
-    expires: rtExpireAt,
-    sameSite: "lax",
-    path: "/",
-  });
-}
-
-export async function updateSession() {
-  const jwtToken = cookies().get("jwt-token")?.value;
-  const rtToken = cookies().get("rt-token")?.value;
-  if (!jwtToken || !rtToken) return null;
-
-  cookies().set("jwt-token", jwtToken, {
-    httpOnly: true,
-    secure: true,
-    expires: jwtExpireAt,
-    sameSite: "lax",
-    path: "/",
-  });
-
-  cookies().set("rt-token", rtToken, {
     httpOnly: true,
     secure: true,
     expires: rtExpireAt,

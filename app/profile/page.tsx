@@ -48,8 +48,8 @@ export default async function ProfilePage(): Promise<ReactElement> {
             <UserPersonalInformationForm />
           </section>
           <section className="grid grid-cols-3 gap-6 mb-8">
-            {dailyLimits?.map((dailyLimit, index) => (
-              <React.Fragment key={index}>
+            {dailyLimits?.map((dailyLimit) => (
+              <React.Fragment key={dailyLimit.id}>
                 <SubscriptionCard
                   title={dailyLimit.subscriptionName}
                   price={handlePrice(dailyLimit)}

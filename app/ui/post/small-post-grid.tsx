@@ -10,7 +10,7 @@ interface SmallPostGridProps {
   posts: PostExtended[] | null;
 }
 
-export function SmallPostGrid({ posts }: SmallPostGridProps): ReactElement {
+export function SmallPostGrid({ posts }: Readonly<SmallPostGridProps>): ReactElement {
   return (
     <div className="grid 2xl:grid-cols-5 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4">
       {posts?.map((post) => (

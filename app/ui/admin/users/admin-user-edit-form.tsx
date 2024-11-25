@@ -5,7 +5,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { userAdminDataUpdateSchema } from "@/app/lib/admin/definitions";
+import { userAdminDataUpdateSchema } from "@/lib/admin/definitions";
 import {
   Form,
   FormControl,
@@ -18,7 +18,9 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { updateAdminUser } from "@/app/actions/admin/users";
 
-export function AdminUserEditForm({ user }: { user: User }): ReactElement {
+export function AdminUserEditForm({
+  user,
+}: Readonly<{ user: User }>): ReactElement {
   const { toast } = useToast();
   const [uploading, setUploading] = useState(false);
   const form = useForm<z.infer<typeof userAdminDataUpdateSchema>>({

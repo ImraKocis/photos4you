@@ -11,9 +11,13 @@ export default async function Search(): Promise<ReactElement> {
   return (
     <Suspense fallback={<Loading />}>
       <div className="flex flex-col">
-        <h1 className="text-2xl font-bold">Search</h1>
+        <div className="flex">
+          <h1 className="text-2xl font-bold">Search</h1>
+          <FilterContextWrapper posts={posts} hashtags={hashtags}>
+            <FilterPostDialog />
+          </FilterContextWrapper>
+        </div>
         <FilterContextWrapper posts={posts} hashtags={hashtags}>
-          <FilterPostDialog />
           <SearchPostsGrid />
         </FilterContextWrapper>
       </div>

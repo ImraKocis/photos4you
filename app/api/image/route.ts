@@ -1,6 +1,6 @@
 import { createPresignedPost } from "@aws-sdk/s3-presigned-post";
 import { v4 as uuidv4 } from "uuid";
-import { getS3Client } from "@/app/lib/s3/s3-config";
+import { getS3Client } from "@/app/lib-server-only/s3/s3-config";
 import { ListObjectsV2Command } from "@aws-sdk/client-s3";
 import { NextRequest } from "next/server";
 
@@ -10,7 +10,7 @@ export async function POST(request: Request) {
   try {
     const client = await getS3Client();
     const { url, fields } = await createPresignedPost(client, {
-      Bucket: "photos4you",
+      Bucket: process.env.AWS_BUCKET_NAME ?? "",
       Key: `${userId}/${uuidv4()}`,
       Conditions: [
         ["content-length-range", 0, 10485760], // up to 10 MB
@@ -24,9 +24,8 @@ export async function POST(request: Request) {
     });
 
     return Response.json({ url, fields });
-  } catch (error) {
-    console.log(error);
-    // @ts-ignore
+  } catch (error: any) {
+    console.error("AWS S3 CREATE PRESIGNED POST ERROR:", error);
     return Response.json({ error: error.message });
   }
 }
@@ -44,8 +43,8 @@ export async function GET(request: NextRequest) {
     const command = new ListObjectsV2Command(input);
     const result = await s3.send(command);
     return Response.json({ images: result.Contents, status: true });
-  } catch (e) {
-    console.log(e);
+  } catch (error) {
+    console.error("AWS S3 GET OBJECTS ERROR:", error);
     return Response.json({ images: [], status: false });
   }
 }
